@@ -21,7 +21,7 @@ AI 없이 작동하는 '결정 트리 기반 맞춤형 세무 체크리스트' �
   ```bash
   npx wrangler deploy
   ```
-- 배포 후 생성된 URL을 `openapi.json`의 `servers.url` 항목에 업데이트하세요.
+- 배포 완료 URL: `https://taxescape.eieu5683.workers.dev` (openapi.json에 반영됨)
 
 ## 💰 수익화 (RapidAPI 등록)
 

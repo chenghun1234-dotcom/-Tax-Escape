@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://tax-escape-api.{your-subdomain}.workers.dev",
+      "url": "https://taxescape.eieu5683.workers.dev",
       "description": "Production Worker"
     }
   ],
