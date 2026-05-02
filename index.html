@@ -11,9 +11,15 @@
 </head>
 <body>
     <div class="container">
-        <header style="text-align: left; margin-bottom: 4rem; animation: fadeInDown 0.8s ease;">
-            <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 300;">제가 만약 세무사라면,</p>
-            <h1 class="logo" style="font-size: 3rem; margin: 0; background: none; -webkit-text-fill-color: white;">세금탈출</h1>
+        <header style="text-align: left; margin-bottom: 4rem; animation: fadeInDown 0.8s ease; display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 300;">제가 만약 세무사라면,</p>
+                <h1 class="logo" style="font-size: 3rem; margin: 0; background: none; -webkit-text-fill-color: white;">세금탈출</h1>
+            </div>
+            <div class="lang-toggle">
+                <button id="lang-ko" class="lang-btn active">KO</button>
+                <button id="lang-en" class="lang-btn">EN</button>
+            </div>
         </header>
 
         <main>
@@ -36,6 +42,25 @@
             <div id="mbti-section" class="glass-card">
                 <div id="mbti-container">
                     <!-- Questions will be injected here -->
+                </div>
+            </div>
+
+            <!-- Tax Tools Section -->
+            <div id="tools-section" class="glass-card" style="margin-top: 2rem;">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.25rem;">🧮 세무 계산기</h2>
+                <div class="tools-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="tool-card" style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 16px; border: 1px solid var(--glass-border);">
+                        <h3 style="font-size: 0.9rem; margin-bottom: 0.5rem;">프리랜서 3.3% 계산기</h3>
+                        <input type="number" id="calc-income" placeholder="수입 금액 입력" style="width: 100%; background: #000; border: 1px solid var(--glass-border); padding: 0.5rem; color: white; border-radius: 8px; margin-bottom: 0.5rem;">
+                        <button id="run-calc" class="option-btn" style="padding: 0.5rem; font-size: 0.8rem; justify-content: center;">계산하기</button>
+                        <div id="calc-result" style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent-color);"></div>
+                    </div>
+                    <div class="tool-card" style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 16px; border: 1px solid var(--glass-border);">
+                        <h3 style="font-size: 0.9rem; margin-bottom: 0.5rem;">장부 유형 판독기</h3>
+                        <input type="number" id="calc-book-income" placeholder="연 수입 입력" style="width: 100%; background: #000; border: 1px solid var(--glass-border); padding: 0.5rem; color: white; border-radius: 8px; margin-bottom: 0.5rem;">
+                        <button id="run-book-calc" class="option-btn" style="padding: 0.5rem; font-size: 0.8rem; justify-content: center;">판독하기</button>
+                        <div id="book-result" style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent-color);"></div>
+                    </div>
                 </div>
             </div>
 
@@ -63,6 +88,11 @@
             <span class="close-btn">&times;</span>
             <div id="detail-content">
                 <!-- Content injected here -->
+            </div>
+            <div style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; display: flex; justify-content: flex-end;">
+                <button id="export-btn" class="option-btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                    <i class="fa-solid fa-download"></i> 가이드 다운로드 (.txt)
+                </button>
             </div>
         </div>
     </div>

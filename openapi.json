@@ -55,6 +55,49 @@
           }
         }
       }
+    },
+    "/tax-premium": {
+      "get": {
+        "summary": "Get high-value tax savings and refund tips (Premium Only)",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Keyword to search (e.g., 환급, 절세, 상속)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Premium tax tips and reference links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" },
+                    "count": { "type": "integer" },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "premium_tips": { "type": "string" },
+                          "category": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

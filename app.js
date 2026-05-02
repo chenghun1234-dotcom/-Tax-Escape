@@ -4,6 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     let currentStep = 0;
+    let currentLang = 'ko'; // 'ko' or 'en'
     const userProfile = {
         type: null,
         income: null,
@@ -23,15 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
         TAX_MBTI_QUESTIONS.forEach((q, index) => {
             const card = document.createElement('div');
             card.className = `question-card ${index === currentStep ? 'active' : ''}`;
+            const questionText = currentLang === 'ko' ? q.question : (q.question_en || q.question);
             card.innerHTML = `
-                <p class="question-text">${q.question}</p>
+                <p class="question-text">${questionText}</p>
                 <div class="options-grid">
-                    ${q.options.map(opt => `
-                        <button class="option-btn" data-key="${q.id}" data-value="${opt.value}">
+                    ${q.options.map(opt => {
+                        const label = currentLang === 'ko' ? opt.label : (opt.label_en || opt.label);
+                        return `<button class="option-btn" data-key="${q.id}" data-value="${opt.value}">
                             <i class="fa-solid fa-chevron-right"></i>
-                            ${opt.label}
-                        </button>
-                    `).join('')}
+                            ${label}
+                        </button>`;
+                    }).join('')}
                 </div>
             `;
             mbtiContainer.appendChild(card);
@@ -100,18 +103,20 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.entries(TAX_GUIDE_STRUCTURE.tax_guide).forEach(([key, category]) => {
             const folder = document.createElement('div');
             folder.className = 'folder-item';
+            const categoryTitle = currentLang === 'ko' ? category.title : (category.title_en || category.title);
             folder.innerHTML = `
                 <div class="folder-header" data-id="${key}" style="padding: 0.4rem 0.8rem;">
                     <i class="fa-solid fa-folder folder-icon"></i>
-                    <span style="font-size: 1.1rem; font-weight: 400;">${category.title}</span>
+                    <span style="font-size: 1.1rem; font-weight: 400;">${categoryTitle}</span>
                 </div>
                 <div id="folder-${key}" class="folder-content">
-                    ${category.items.map(item => `
-                        <a href="${item.url}" class="file-item" data-id="${item.id}">
+                    ${category.items.map(item => {
+                        const itemName = currentLang === 'ko' ? item.name : (item.name_en || item.name);
+                        return `<a href="${item.url}" class="file-item" data-id="${item.id}">
                             <i class="fa-solid fa-file-lines file-icon"></i>
-                            ${item.name}
-                        </a>
-                    `).join('')}
+                            ${itemName}
+                        </a>`;
+                    }).join('')}
                 </div>
             `;
             explorerContainer.appendChild(folder);
@@ -152,19 +157,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = TAX_DATA_CONTENT.find(item => item.id === id);
         if (!data) {
             detailContent.innerHTML = `
-                <h2>준비 중입니다</h2>
-                <p style="margin-top: 1rem; color: var(--text-secondary);">
-                    현재 최신 국세청 데이터를 기반으로 업데이트 중인 항목입니다.
-                </p>
+                <h2>준비 중입니다 / Coming Soon</h2>
             `;
         } else {
+            const title = currentLang === 'ko' ? data.title : data.title_en;
+            const content = currentLang === 'ko' ? data.content : data.content_en;
             detailContent.innerHTML = `
                 <div class="tag">${data.category}</div>
-                <h2 style="margin: 1rem 0;">${data.title}</h2>
+                <h2 style="margin: 1rem 0;">${title}</h2>
                 <div id="copy-area" style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; white-space: pre-line; position: relative;">
-                    ${data.content}
+                    ${content}
                     <button id="copy-btn" style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(255,255,255,0.1); border: none; color: var(--text-secondary); cursor: pointer; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.7rem;">
-                        <i class="fa-solid fa-copy"></i> 복사
+                        <i class="fa-solid fa-copy"></i> ${currentLang === 'ko' ? '복사' : 'Copy'}
                     </button>
                 </div>
                 <div class="tag-list">
@@ -181,6 +185,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.innerHTML = '<i class="fa-solid fa-copy"></i> 복사';
                 }, 2000);
             });
+
+            // Export logic
+            document.getElementById('export-btn').onclick = () => {
+                const title = currentLang === 'ko' ? data.title : data.title_en;
+                const content = currentLang === 'ko' ? data.content : data.content_en;
+                const blob = new Blob([`${title}\n\n${content}`], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${title.replace(/\s/g, '_')}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+            };
         }
         detailOverlay.style.display = 'flex';
     }
@@ -238,6 +255,40 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === detailOverlay) {
             detailOverlay.style.display = 'none';
         }
+    });
+
+    // 5. Language Toggle
+    document.getElementById('lang-ko').addEventListener('click', () => switchLang('ko'));
+    document.getElementById('lang-en').addEventListener('click', () => switchLang('en'));
+
+    function switchLang(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`lang-${lang}`).classList.add('active');
+        
+        // Refresh UI
+        renderMBTI();
+        renderExplorer();
+    }
+
+    // 6. Calculators
+    document.getElementById('run-calc').addEventListener('click', () => {
+        const income = document.getElementById('calc-income').value;
+        if (!income) return;
+        const tax = Math.floor(income * 0.033);
+        const result = currentLang === 'ko' 
+            ? `떼인 세금(3.3%): 약 ${tax.toLocaleString()}원` 
+            : `Withheld Tax (3.3%): approx. ${tax.toLocaleString()} KRW`;
+        document.getElementById('calc-result').innerText = result;
+    });
+
+    document.getElementById('run-book-calc').addEventListener('click', () => {
+        const income = document.getElementById('calc-book-income').value;
+        if (!income) return;
+        let type = '';
+        if (income < 75000000) type = currentLang === 'ko' ? '간편장부 대상자' : 'Simple Bookkeeping';
+        else type = currentLang === 'ko' ? '복식부기 의무자' : 'Double-entry Bookkeeping';
+        document.getElementById('book-result').innerText = type;
     });
 
     // Initialize

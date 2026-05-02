@@ -46,11 +46,32 @@ export default {
       }), { status: 200, headers });
     }
 
+    if (url.pathname === '/tax-premium') {
+      if (!query) {
+        return new Response(JSON.stringify({ status: "error", message: "Query required." }), { status: 400, headers });
+      }
+
+      const results = TAX_DATA_CONTENT.filter(item => 
+        (item.title.includes(query) || item.tags.some(tag => tag.includes(query))) &&
+        item.premium_info
+      ).map(item => ({
+        name: item.title,
+        premium_tips: item.premium_info,
+        category: item.category
+      }));
+
+      return new Response(JSON.stringify({
+        status: "success",
+        count: results.length,
+        results: results
+      }), { status: 200, headers });
+    }
+
     // Health check or documentation
     return new Response(JSON.stringify({
       name: "Tax Escape API",
       version: "1.0.0",
-      endpoints: ["/tax-tags?query={keyword}"]
+      endpoints: ["/tax-tags?query={keyword}", "/tax-premium?query={keyword}"]
     }), { status: 200, headers });
   },
 };
