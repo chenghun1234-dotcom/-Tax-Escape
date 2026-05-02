@@ -1,0 +1,60 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Korean Tax Summary API (세금탈출)",
+    "description": "AI-free, rule-based tax guidance and tag mapping for Korean individuals and businesses.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://tax-escape-api.{your-subdomain}.workers.dev",
+      "description": "Production Worker"
+    }
+  ],
+  "paths": {
+    "/tax-tags": {
+      "get": {
+        "summary": "Search tax guides by tags or keywords",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Keyword to search (e.g., 프리랜서, 5월, 공제)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" },
+                    "count": { "type": "integer" },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "category": { "type": "string" },
+                          "tags": { "type": "array", "items": { "type": "string" } },
+                          "id": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
